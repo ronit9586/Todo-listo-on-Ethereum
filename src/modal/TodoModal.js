@@ -56,6 +56,14 @@ export default function TodoModal(props) {
     setStatusValue(event.target.value);
   };
 
+  const handleTodo = async () => {
+    if (props.formData) {
+      editTodo();
+    } else {
+      addTodo();
+    }
+  };
+
   const addTodo = async () => {
     setBtnSubmit("todo is adding...");
     try {
@@ -76,6 +84,7 @@ export default function TodoModal(props) {
       await tx.wait();
       console.log(date, _title, _status, _priority);
       handleClose();
+      window.location.reload(false);
     } catch (err) {
       alert(JSON.stringify(err));
     }
@@ -83,7 +92,9 @@ export default function TodoModal(props) {
   };
 
   useEffect(() => {
-    console.log(props.formData);
+    if (props.formData) {
+      setBtnSubmit("edit todo");
+    }
   }, []);
 
   const editTodo = async () => {
@@ -107,6 +118,7 @@ export default function TodoModal(props) {
       await tx.wait();
       console.log(date, _title, _status, _priority);
       handleClose();
+      window.location.reload(false);
     } catch (err) {
       alert(JSON.stringify(err));
     }
@@ -129,8 +141,8 @@ export default function TodoModal(props) {
               variant="h6"
               component="h2"
             >
-              Add Task
-              <Box sx={connect}>Connectd to : 0xF5e8b2...e17c6</Box>
+              {props.formData ? "Add Task" : "Edit Task"}
+              <Box sx={connect}>Connectd</Box>
             </Typography>
 
             <Box sx={{ flexGrow: 1 }}>
@@ -181,7 +193,7 @@ export default function TodoModal(props) {
                       defaultValue="1"
                       name="radio-buttons-group"
                       sx={{ display: "block ruby" }}
-                      value={statusValue || 1}
+                      value={statusValue || "1"}
                       onChange={statusChange}
                     >
                       <FormControlLabel
@@ -210,7 +222,7 @@ export default function TodoModal(props) {
                       name="radio-buttons-group"
                       sx={{ display: "block ruby" }}
                       // value={props.formData.priority}
-                      value={priorityValue}
+                      value={priorityValue || "0"}
                       onChange={PriorityChange}
                     >
                       <FormControlLabel
@@ -246,7 +258,7 @@ export default function TodoModal(props) {
                 style={{ float: "right" }}
                 color="success"
                 variant="contained"
-                onClick={addTodo}
+                onClick={handleTodo}
               >
                 {btnSubmit}
               </Button>

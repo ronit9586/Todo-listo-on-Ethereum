@@ -23,36 +23,24 @@ export default function Home() {
   });
 
   const handleOpen = async (id = -1) => {
-    // console.log(cellValues.row);
     if (id != -1) {
       setEditData(rows[id]);
       setOpen(true);
     } else {
       if (window.ethereum) {
-        setEditData({
-          id: -1,
-          date: new Date().setHours(23, 59, 59, 999),
-          title: "",
-          description: "",
-          status: 1,
-          priority: 0,
-        });
         setOpen(true);
       } else {
         alert("Metamask not found");
         console.log("has");
       }
-      // setOpen(true)
     }
-    // setEditData(cellValues.row)
   };
   const handleDelete = async (id) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const contract = getTodoContract(provider.getSigner());
     const tx = await contract.removeTodo(id);
     await tx.wait();
-    window.location.reload();
-    console.log(id);
+    window.location.reload(false);
   };
 
   useEffect(() => {
