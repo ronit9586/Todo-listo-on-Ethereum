@@ -18,13 +18,17 @@ export default function Home() {
     date: new Date().setHours(23, 59, 59, 999),
     title: "",
     description: "",
-    status: 1,
-    priority: 0,
+    status: "1",
+    priority: "0",
   });
 
-  const handleOpen = async (id = -1) => {
-    if (id != -1) {
-      setEditData(rows[id]);
+  function padTo2Digits(num) {
+    return num.toString().padStart(2, '0');
+  }
+  
+  const handleOpen = async (idx) => {
+    if (idx != -1) {
+      setEditData(rows[idx]);
       setOpen(true);
     } else {
       if (window.ethereum) {
@@ -42,6 +46,14 @@ export default function Home() {
     await tx.wait();
     window.location.reload(false);
   };
+
+  function formatDate(date) {
+    return [
+      padTo2Digits(date.getMonth() + 1),
+      padTo2Digits(date.getDate()),
+      date.getFullYear(),
+    ].join('/');
+  }
 
   useEffect(() => {
     (async function () {
@@ -70,7 +82,7 @@ export default function Home() {
           arr.push({
             id: i,
             title: row.title,
-            date: new Date(parseInt(row.date.toString())),
+            date: formatDate(new Date(parseInt(row.date.toString())*1000)),
             description: row.description,
             status: row.status.toString(),
             priority: row.priority.toString(),
@@ -156,7 +168,7 @@ export default function Home() {
   return (
     <>
       <Container maxWidth="lg">
-        <Button variant="outlined" onClick={handleOpen} sx={{ m: 3 }}>
+        <Button variant="outlined" onClick={()=>handleOpen(-1)} sx={{ m: 3 }}>
           Add
         </Button>
         <Box sx={{ m: 3 }} style={{ float: "right" }}>
